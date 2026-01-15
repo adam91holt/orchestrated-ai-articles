@@ -283,6 +283,15 @@ Each agent has a dedicated workspace that acts as persistent memory:
 
 Treat the workspace as the **operating system for the agent**. It’s not just storage — it’s long‑term state.
 
+### Glossary (Shared Language)
+
+A lightweight `GLOSSARY.md` keeps terminology consistent across the team:
+- internal tools (e.g., `sessions_spawn`, `clawdspace`)
+- business names and contexts
+- protocol terms (heartbeat, quiet hours, deliverable format)
+
+Shared language prevents drift across agents and keeps documentation aligned.
+
 ### Self‑Healing Docs & Continuous Improvement
 
 Agents update their own `.md` files when they learn something new:
@@ -294,7 +303,26 @@ This creates **self‑healing documentation** that compounds over time.
 
 ---
 
-## 10) GitHub‑Centric Execution
+## 10) Clawdspace & Parallel Agents
+
+Clawdspace provides **remote, isolated sandboxes** for agents (think “agents with their own dev boxes”).
+
+Why it matters:
+- spin up multiple agents in parallel, each with its own repo clone
+- run CPU/GPU‑heavy work off your local machine
+- keep tasks isolated and reproducible
+
+**Parallel agents pattern:**
+1) Create N clawdspace environments
+2) Spawn N agent sessions, each bound to one environment
+3) Assign independent tasks (bugs, reviews, research)
+4) Merge outputs back via PRs or handoff docs
+
+This is how you go from “one assistant” to a **true agent swarm** without chaos.
+
+---
+
+## 11) GitHub‑Centric Execution
 
 The operating model uses GitHub issues as the source of truth, and `gh` for execution:
 - issues define task state and acceptance criteria
