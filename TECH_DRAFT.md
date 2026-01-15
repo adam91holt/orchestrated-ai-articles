@@ -164,6 +164,8 @@ Aliases and allowlists make it safe to switch models without breaking policy.
 
 ## 4) Sandboxing & Tool Policy
 
+Docs: https://docs.clawd.bot/gateway/sandboxing
+
 Clawdbot can run tools inside **Docker sandboxes** to reduce blast radius.
 
 Key controls (from `gateway/sandboxing.md`):
@@ -181,6 +183,8 @@ Multi‑agent precedence rules ensure **deny wins** and sandbox policies don’t
 ---
 
 ## 5) Session Tools & Delegation
+
+Docs: https://docs.clawd.bot/concepts/session-tool
 
 The **session toolset** is the backbone of delegation:
 
@@ -224,6 +228,8 @@ sequenceDiagram
 
 ## 6) Heartbeats: Proactive Automation
 
+Docs: https://docs.clawd.bot/gateway/heartbeat
+
 Heartbeats are scheduled agent turns that keep the system alive:
 - configurable cadence (`agent.heartbeat.every`)
 - explicit prompt body
@@ -242,6 +248,8 @@ That creates an **always‑on orchestration layer** rather than a reactive chat 
 ---
 
 ## 7) Webhooks & Hooks
+
+Docs: https://docs.clawd.bot/gateway/configuration#hooks
 
 The gateway can expose `/hooks/*` endpoints to ingest external events.
 
@@ -265,6 +273,8 @@ This turns alerts into **proactive incident response**, not just notifications.
 ---
 
 ## 8) Channels & Routing
+
+Docs: https://docs.clawd.bot/cli/channels
 
 Bindings map channels/accounts to agents. In practice:
 - WhatsApp, Slack, and Teams can all be routed to Kev
@@ -304,6 +314,8 @@ This creates **self‑healing documentation** that compounds over time.
 ---
 
 ## 10) Clawdspace & Parallel Agents
+
+Docs: https://docs.clawd.bot/multi-agent-sandbox-tools
 
 Clawdspace provides **remote, isolated sandboxes** for agents (think “agents with their own dev boxes”).
 
