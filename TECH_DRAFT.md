@@ -48,13 +48,13 @@ flowchart LR
   end
 
   subgraph Agents
-    KEV[Kev (Orchestrator)]
-    REX[Rex (Engineering)]
-    HAWK[Hawk (Security/QA)]
-    SCOUT[Scout (Research)]
-    DASH[Dash (Analytics)]
-    DOT[Dot (Ops)]
-    PIXEL[Pixel (Design)]
+    KEV[Kev Orchestrator]
+    REX[Rex Engineering]
+    HAWK[Hawk Security QA]
+    SCOUT[Scout Research]
+    DASH[Dash Analytics]
+    DOT[Dot Ops]
+    PIXEL[Pixel Design]
   end
 
   subgraph Sandboxes
