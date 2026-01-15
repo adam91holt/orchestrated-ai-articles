@@ -4,6 +4,8 @@ This is the technical companion to “2026: The Year of the Orchestrator.” It 
 
 Full article: https://adams-ai-journey.ghost.io/2026-the-year-of-the-orchestrator/
 
+> **Building the future of orchestration at [thecolab.ai](https://thecolab.ai).**
+
 > Note: configuration details are summarized and **redacted**. No secrets or tokens included.
 
 ---

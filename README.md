@@ -4,15 +4,15 @@ Public home for technical write‑ups on orchestrated, multi‑agent AI systems.
 
 ```mermaid
 graph TD
-    subgraph "The Orchestrator"
-        Kev[Kev\n(Opus 4.5)]
+    subgraph S1["The Orchestrator"]
+        Kev["Kev<br/>(Opus 4.5)"]
     end
     
-    subgraph "The Specialists"
-        Rex[Rex\n(Codex)]
-        Scout[Scout\n(Gemini Flash)]
-        Hawk[Hawk\n(Opus)]
-        Pixel[Pixel\n(Gemini Pro)]
+    subgraph S2["The Specialists"]
+        Rex["Rex<br/>(Codex)"]
+        Scout["Scout<br/>(Gemini Flash)"]
+        Hawk["Hawk<br/>(Opus)"]
+        Pixel["Pixel<br/>(Gemini Pro)"]
     end
     
     Kev -->|Delegates| Rex
@@ -28,6 +28,9 @@ graph TD
 
 ## Why this repo
 I’m publishing these as standalone articles so they can evolve independently of internal notes. Future posts and revisions will live here.
+
+## About
+Building the next generation of orchestrated AI at **[thecolab.ai](https://thecolab.ai)**.
 
 ## Contributing
 PRs welcome if you have concrete improvements, corrections, or diagrams to add.
