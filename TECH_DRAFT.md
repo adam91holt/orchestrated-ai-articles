@@ -1,0 +1,314 @@
+# Clawdbot Orchestration: A Technical Walkthrough
+
+This is the technical companion to “2026: The Year of the Orchestrator.” It explains **how the system is wired**: models, agents, sandboxing, routing, session tools, webhooks, heartbeats, and the workflow glue that makes a multi‑agent team reliable.
+
+> Note: configuration details are summarized and **redacted**. No secrets or tokens included.
+
+---
+
+## 0) Product Context (clawd.bot)
+
+The clawd.bot site positions Clawdbot as “the AI that actually does things” and emphasizes:
+- **Runs on your machine** (macOS/Windows/Linux), private by default.
+- **Any chat app** front‑end (WhatsApp, Telegram, Discord, Slack, Signal, iMessage).
+- **Persistent memory** that makes the assistant uniquely yours.
+- **Full system access** with **sandboxing controls**.
+- **Skills & plugins** — including self‑authored skills.
+
+It also highlights a one‑line installer and 50+ integrations. This article focuses on the under‑the‑hood system that makes those claims true.
+
+---
+
+## 1) Architecture at a Glance
+
+Clawdbot is a **gateway + agent runtime** system. The gateway owns:
+- provider integrations (WhatsApp, Slack, Teams, etc.)
+- routing and session management
+- hooks and heartbeats
+- tool execution (optionally sandboxed)
+
+The agent runtime is where the LLM operates, with tool access controlled by policy. Sessions are the unit of state, and different channels map to distinct session keys.
+
+### System Diagram (Mermaid)
+
+```mermaid
+flowchart LR
+  subgraph Channels
+    WA[WhatsApp]
+    SL[Slack]
+    MS[Teams]
+    TG[Telegram]
+  end
+
+  subgraph Gateway
+    ROUTER[Routing + Sessions]
+    HOOKS[Hooks / Webhooks]
+    HB[Heartbeats]
+    TOOLS[Tool Runner]
+  end
+
+  subgraph Agents
+    KEV[Kev (Orchestrator)]
+    REX[Rex (Engineering)]
+    HAWK[Hawk (Security/QA)]
+    SCOUT[Scout (Research)]
+    DASH[Dash (Analytics)]
+    DOT[Dot (Ops)]
+    PIXEL[Pixel (Design)]
+  end
+
+  subgraph Sandboxes
+    SBX[Docker Sandbox]
+  end
+
+  subgraph Workspaces
+    WS[Agent Workspaces + Memory]
+  end
+
+  WA --> ROUTER
+  SL --> ROUTER
+  MS --> ROUTER
+  TG --> ROUTER
+
+  HOOKS --> ROUTER
+  HB --> ROUTER
+
+  ROUTER --> KEV
+  KEV --> REX
+  KEV --> HAWK
+  KEV --> SCOUT
+  KEV --> DASH
+  KEV --> DOT
+  KEV --> PIXEL
+
+  REX --> TOOLS
+  HAWK --> TOOLS
+  SCOUT --> TOOLS
+  DASH --> TOOLS
+  DOT --> TOOLS
+  PIXEL --> TOOLS
+
+  TOOLS --> SBX
+  KEV <--> WS
+  REX <--> WS
+  HAWK <--> WS
+  SCOUT <--> WS
+  DASH <--> WS
+  DOT <--> WS
+  PIXEL <--> WS
+```
+
+---
+
+## 2) Multi‑Agent Topology
+
+Each agent has:
+- a unique workspace
+- a default model
+- optional per‑agent sandbox/tool rules
+- optional sub‑agent permissions
+
+The orchestrator (Kev) has full access and delegates tasks to specialists via `sessions_spawn`. Specialist agents can be locked down or sandboxed separately if needed.
+
+Key idea: **specialization + orchestration** beats one generalist model. The config defines a roster and a routing map that binds channels/accounts to specific agent identities.
+
+### Identity & Behavior Layers (AGENTS/SOUL/IDENTITY)
+
+Each agent carries three human‑readable control files:
+- `IDENTITY.md` — name, creature, vibe, emoji
+- `SOUL.md` — behavioral rules + operating style
+- `AGENTS.md` — operating contract (handoffs, safety, reporting)
+
+This creates consistent personalities *and* consistent operational expectations across the team (e.g., “Kev is the orchestrator” and “do not message Adam directly”).
+
+---
+
+## 3) Models & Selection
+
+Clawdbot supports a **model catalog** with aliases and fallbacks.
+
+Highlights from the docs:
+- `agent.models` defines an allowlist + aliases
+- `agent.model.primary` chooses the default model
+- `agent.model.fallbacks` adds resilience
+- `agent.imageModel` can be separate if the primary lacks vision
+
+Aliases make switching models lightweight (`/opus`, `/gemini`, etc.).
+
+There’s also **context pruning**, which trims old tool output without deleting full transcripts — useful for long‑running agents with heavy tool usage.
+
+### Right Model for the Job
+
+The system is designed for **model selection by task**:
+- heavy reasoning/architecture → bigger models
+- routine ops or summaries → cheaper/faster models
+- vision tasks → image‑capable models (via `agent.imageModel`)
+
+Aliases and allowlists make it safe to switch models without breaking policy.
+
+---
+
+## 4) Sandboxing & Tool Policy
+
+Clawdbot can run tools inside **Docker sandboxes** to reduce blast radius.
+
+Key controls (from `gateway/sandboxing.md`):
+- `mode`: `off` | `non-main` | `all`
+- `scope`: `session` | `agent` | `shared`
+- `workspaceAccess`: `none` | `ro` | `rw`
+- network default is **off** for sandboxes
+
+Tools can be allow/deny‑listed globally or per agent. This makes it possible to run:
+- a personal assistant with full host access
+- a public agent with read‑only tools inside a sandbox
+
+Multi‑agent precedence rules ensure **deny wins** and sandbox policies don’t override global restrictions.
+
+---
+
+## 5) Session Tools & Delegation
+
+The **session toolset** is the backbone of delegation:
+
+- `sessions_list`: list active sessions
+- `sessions_history`: fetch transcripts
+- `sessions_send`: cross‑agent messaging with reply‑back
+- `sessions_spawn`: run sub‑agents in parallel
+
+From `tools/subagents.md`:
+- sub‑agents run in isolated sessions
+- they **announce results back** automatically
+- no sub‑agent can spawn another sub‑agent
+- concurrency is controlled via `agent.subagents.maxConcurrent`
+
+This yields **fan‑out work** without blocking the main orchestrator, while keeping tool usage tightly controlled.
+
+### Delegation Flow (Mermaid)
+
+```mermaid
+sequenceDiagram
+  participant Adam
+  participant Kev
+  participant Gateway
+  participant Rex
+  participant Hawk
+  participant Scout
+
+  Adam->>Kev: Request (problem / outcome)
+  Kev->>Gateway: sessions_spawn (Rex/Hawk/Scout)
+  Gateway->>Rex: Sub-agent run
+  Gateway->>Hawk: Sub-agent run
+  Gateway->>Scout: Sub-agent run
+  Rex-->>Gateway: Announce result
+  Hawk-->>Gateway: Announce result
+  Scout-->>Gateway: Announce result
+  Gateway-->>Kev: Aggregated replies
+  Kev-->>Adam: Synthesized response
+```
+
+---
+
+## 6) Heartbeats: Proactive Automation
+
+Heartbeats are scheduled agent turns that keep the system alive:
+- configurable cadence (`agent.heartbeat.every`)
+- explicit prompt body
+- strict response contract (`HEARTBEAT_OK` to acknowledge)
+
+Heartbeats are ideal for reminders, inbox monitoring, and routine checks without spamming the user. They’re **first‑class**, not hacks.
+
+### Always‑On System
+
+Heartbeats + hooks mean the system doesn’t sleep:
+- heartbeats poll for proactive work at a fixed cadence
+- hooks inject new work the moment external systems fire
+
+That creates an **always‑on orchestration layer** rather than a reactive chat bot.
+
+---
+
+## 7) Webhooks & Hooks
+
+The gateway can expose `/hooks/*` endpoints to ingest external events.
+
+Capabilities:
+- `POST /hooks/wake` to trigger a heartbeat
+- `POST /hooks/agent` to create an agent run
+- `POST /hooks/<name>` resolved via mappings
+
+Mappings support templating, transforms, model overrides, and delivery routing. This is how you wire email, CRM, monitoring, or internal systems into a live agent workflow.
+
+---
+
+## 8) Channels & Routing
+
+Bindings map channels/accounts to agents. In practice:
+- WhatsApp, Slack, and Teams can all be routed to Kev
+- specialist agents can have their own channel identities
+
+This makes “AI teams across all comms” possible without losing context. Direct chats collapse into `main`, while groups get their own session keys.
+
+---
+
+## 9) Workspaces & Memory
+
+Each agent has a dedicated workspace that acts as persistent memory:
+- `AGENTS.md` defines behavioral rules
+- `MEMORY.md` and `memory/` capture durable facts
+- shared workspace paths enable cross‑agent handoffs
+
+Treat the workspace as the **operating system for the agent**. It’s not just storage — it’s long‑term state.
+
+### Self‑Healing Docs & Continuous Improvement
+
+Agents update their own `.md` files when they learn something new:
+- rules, gotchas, or best practices go into `AGENTS.md` or `SOUL.md`
+- recurring decisions land in `memory.md` or daily notes
+- mistakes become guardrails (documented, not forgotten)
+
+This creates **self‑healing documentation** that compounds over time.
+
+---
+
+## 10) GitHub‑Centric Execution
+
+The operating model uses GitHub issues as the source of truth, and `gh` for execution:
+- issues define task state and acceptance criteria
+- Slack is coordination only (deliverables only, no chatter)
+- deliverables are either a PR link or inline output
+
+### GitHub Projects per Agent
+
+For larger initiatives, each agent can own a GitHub project board:
+- clear swim‑lanes per domain (engineering, ops, research)
+- WIP limits per agent
+- explicit handoffs between boards
+
+This makes multi‑agent work **visible and auditable** without a single shared backlog turning into chaos.
+
+### Tagging & Handoff Discipline
+
+Clawdbot’s team protocol is strict:
+- only `DELIVERABLE:` or `BLOCKER:` messages
+- tag the orchestrator only when work is done or blocked
+- no status spam
+
+This keeps signal high and orchestration clean.
+
+This reduces drift and gives every agent a single, auditable work queue.
+
+---
+
+# Closing
+
+The system isn’t magic; it’s **plumbing**:
+- clean routing
+- strict tool policy
+- explicit delegation
+- proactive heartbeats
+- hardened sandboxes
+- clear session boundaries
+
+When all of that is in place, the team stops feeling like “AI in a tab” and starts behaving like a reliable operational layer.
+
+If you want, I can turn this into a public‑facing article with diagrams and config snippets (redacted) showing how to replicate the setup.
