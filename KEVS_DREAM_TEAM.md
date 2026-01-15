@@ -1,4 +1,4 @@
-# Clawdbot Orchestration: A Technical Walkthrough
+# Kev’s Dream Team: The Architecture of an AI Workforce
 
 This is the technical companion to “2026: The Year of the Orchestrator.” It explains **how the system is wired**: models, agents, sandboxing, routing, session tools, webhooks, heartbeats, and the workflow glue that makes a multi‑agent team reliable.
 
@@ -17,7 +17,7 @@ Massive shout‑out to https://github.com/steipete — go check his repos. He’
 ## 0) Product Context (clawd.bot)
 
 The clawd.bot site positions Clawdbot as “the AI that actually does things” and emphasizes:
-- **Runs on your machine** (macOS/Windows/Linux), private by default.
+- **Runs on your machine**: The *runtime* is local. You own the prompt loops, the memory files, and the API keys. You aren't chatting with a SaaS; you are running a private orchestration engine that rents intelligence from providers (OpenAI, Anthropic, Google) but keeps the executive function on your hardware.
 - **Any chat app** front‑end (WhatsApp, Telegram, Discord, Slack, Signal, iMessage).
 - **Persistent memory** that makes the assistant uniquely yours.
 - **Full system access** with **sandboxing controls**.
@@ -108,7 +108,55 @@ flowchart LR
 
 ---
 
-## 2) Multi‑Agent Topology
+## 2) The Roster: Kev's Dream Team
+
+Orchestration only works if you have specialists to orchestrate. We don't ask one LLM to be a coder, designer, researcher, and ops engineer simultaneously. We split the personalities and the permissions.
+
+### **Kev (The Orchestrator)**
+- **Role:** Team Lead & Dispatcher
+- **Model:** High-reasoning (e.g., Gemini 3 Pro / Claude Opus 4.5)
+- **Permissions:** Full system access, session spawning, heartbeat management.
+- **Vibe:** "The Manager." Kev doesn't write the code; Kev ensures the code gets written. He holds the context of the user's goals and delegates to the right specialist.
+
+### **Rex (Engineering)**
+- **Role:** Senior Software Engineer
+- **Model:** Coding specialist (e.g., OpenAI Codex / Gemini Code)
+- **Permissions:** Read/Write access to codebases, git operations, strict sandbox for execution.
+- **Vibe:** "The Builder." Give Rex a spec, and he ships a PR.
+
+### **Hawk (Security & QA)**
+- **Role:** Security Engineer & Tester
+- **Model:** Reasoning/Security focused
+- **Permissions:** Read-only code access, penetration testing tools, linter execution.
+- **Vibe:** "The Auditor." Hawk breaks things so users don't. He reviews Rex's PRs before they merge.
+
+### **Scout (Research)**
+- **Role:** Information Retrieval
+- **Model:** High-speed web search & synthesis
+- **Permissions:** Brave Search, Browser Tools, limited file access.
+- **Vibe:** "The Librarian." Scout finds documentation, API specs, and competitor analysis to feed into the team's context.
+
+### **Dash (Analytics)**
+- **Role:** Data Scientist
+- **Model:** Data analysis & visualization
+- **Permissions:** SQL (D1/Superset), CSV processing, charting libraries.
+- **Vibe:** "The Analyst." Dash turns logs into insights.
+
+### **Dot (Ops)**
+- **Role:** DevOps & Infrastructure
+- **Model:** Infrastructure-as-Code specialist
+- **Permissions:** Cloudflare API, AWS CLI, Terraform/Pulumi access.
+- **Vibe:** "The Mechanic." Dot keeps the lights on and the pipes clean.
+
+### **Pixel (Design)**
+- **Role:** UI/UX & Creative
+- **Model:** Vision-capable & Image generation
+- **Permissions:** Image generation tools, frontend code access.
+- **Vibe:** "The Artist." Pixel ensures it doesn't just work, but looks premium.
+
+---
+
+## 3) Multi‑Agent Topology
 
 Each agent has:
 - a unique workspace
@@ -139,7 +187,7 @@ Agents are instructed to read these every session, so handoffs stay consistent a
 
 ---
 
-## 3) Models & Selection
+## 4) Models & Selection
 
 Clawdbot supports a **model catalog** with aliases and fallbacks.
 
@@ -153,6 +201,22 @@ Aliases make switching models lightweight (`/opus`, `/gemini`, etc.).
 
 There’s also **context pruning**, which trims old tool output without deleting full transcripts — useful for long‑running agents with heavy tool usage.
 
+### What We're Seeing Work (The "Meta")
+
+After thousands of hours of runtime, clear winners have emerged for specific domains:
+
+- **OpenAI Codex (GPT-5.2)**: The undisputed king of code. **Accuracy > Speed.** When Rex needs to refactor a complex class or write a test suite, Codex nails it where others hallucinate subtle bugs.
+- **Claude Opus 4.5**: The best orchestrator. Kev runs on Opus because it handles long-context state and multi-step delegation better than anything else. It rarely drops the ball on protocol.
+- **Gemini 3 Pro**: Excellent for frontend and visual design. Pixel uses this to nail CSS, layout, and component structures.
+- **Gemini 3 Flash**: The speed demon for Scout. It's not just fast; it has a **massive context window**. Scout can ingest entire API documentation sets or long PDF reports in a single pass, distilling them into a half-page summary for the smarter (and more expensive) agents to use.
+
+### Cost & Performance
+
+This mix isn't just about capability; it's about economics.
+- We don't burn Opus credits on summarizing search results (that's for Flash).
+- We don't risk a cheap model on a production database migration script (that's for Codex).
+- Orchestration allows us to **arbitrage intelligence**: paying for premium reasoning only where it moves the needle.
+
 ### Right Model for the Job
 
 The system is designed for **model selection by task**:
@@ -164,7 +228,7 @@ Aliases and allowlists make it safe to switch models without breaking policy.
 
 ---
 
-## 4) Sandboxing & Tool Policy
+## 5) Sandboxing & Tool Policy
 
 Docs: https://docs.clawd.bot/gateway/sandboxing
 
@@ -184,7 +248,7 @@ Multi‑agent precedence rules ensure **deny wins** and sandbox policies don’t
 
 ---
 
-## 5) Session Tools & Delegation
+## 6) Session Tools & Delegation
 
 Docs: https://docs.clawd.bot/concepts/session-tool
 
@@ -228,7 +292,7 @@ sequenceDiagram
 
 ---
 
-## 6) Heartbeats: Proactive Automation
+## 7) Heartbeats: Proactive Automation
 
 Docs: https://docs.clawd.bot/gateway/heartbeat
 
@@ -249,7 +313,7 @@ That creates an **always‑on orchestration layer** rather than a reactive chat 
 
 ---
 
-## 7) Webhooks & Hooks
+## 8) Webhooks & Hooks
 
 Docs: https://docs.clawd.bot/gateway/configuration#hooks
 
@@ -274,7 +338,7 @@ This turns alerts into **proactive incident response**, not just notifications.
 
 ---
 
-## 8) Channels & Routing
+## 9) Channels & Routing
 
 Docs: https://docs.clawd.bot/cli/channels
 
@@ -286,7 +350,7 @@ This makes “AI teams across all comms” possible without losing context. Dire
 
 ---
 
-## 9) Workspaces & Memory
+## 10) Workspaces & Memory
 
 Each agent has a dedicated workspace that acts as persistent memory:
 - `AGENTS.md` defines behavioral rules
@@ -315,7 +379,7 @@ This creates **self‑healing documentation** that compounds over time.
 
 ---
 
-## 10) Clawdspace & Parallel Agents
+## 11) Clawdspace & Parallel Agents
 
 Docs: https://docs.clawd.bot/multi-agent-sandbox-tools
 
@@ -332,11 +396,16 @@ Why it matters:
 3) Assign independent tasks (bugs, reviews, research)
 4) Merge outputs back via PRs or handoff docs
 
+### The Vision: 100x Rex
+We are building Clawdspace because we don't just want one engineer; we want a department. The goal is to spin up **100 concurrent instances of Rex**, each tackling a different ticket or microservice, all orchestrated by Kev.
+
+This architecture decouples the agent from the user's laptop. It turns "My AI Assistant" into **"Deployable Intelligence Units."** You can drop a pre-configured team (Kev + Rex + Hawk) into a client's infrastructure, give them access to a specific repo, and let them work autonomously in a secure, sandboxed cluster.
+
 This is how you go from “one assistant” to a **true agent swarm** without chaos.
 
 ---
 
-## 11) GitHub‑Centric Execution
+## 12) GitHub‑Centric Execution
 
 The operating model uses GitHub issues as the source of truth, and `gh` for execution:
 - issues define task state and acceptance criteria
@@ -361,11 +430,30 @@ Clawdbot’s team protocol is strict:
 
 This keeps signal high and orchestration clean.
 
-This reduces drift and gives every agent a single, auditable work queue.
+---
+
+## 13) Walkthrough: The Life of a Ticket
+
+Here is how a real task flows through the system:
+
+1.  **Ingest**: Adam WhatsApps Kev: *"We need a retry mechanism on the webhook handler."*
+2.  **Triage**: Kev (Opus) checks `TEAM.md`, sees this is engineering, but checks `MEMORY.md` and recalls the repo location.
+3.  **Delegate**: Kev spawns **Rex** (Codex) with the task and points him to the file path.
+4.  **Execution**:
+    *   Rex reads the file.
+    *   Rex writes a reproduction test case (fails).
+    *   Rex implements the retry logic.
+    *   Rex runs the test (passes).
+    *   Rex commits and pushes to GitHub.
+5.  **Audit**: Kev spawns **Hawk** to review the diff. Hawk checks for security issues (e.g., "did you log the retry token?").
+6.  **Report**: Kev replies to Adam on WhatsApp: *"PR is up. Added exponential backoff. Hawk approved it. Link: github.com/..."*
+
+Total human time involved: **15 seconds** (sending the message).
+Total agent time: **3 minutes**.
 
 ---
 
-## 11) Minimal Config Example (Redacted, 3‑Agent Team)
+## 14) Minimal Config Example (Redacted, 3‑Agent Team)
 
 ```json
 {
@@ -377,7 +465,8 @@ This reduces drift and gives every agent a single, auditable work queue.
     },
     "list": [
       { "id": "kev", "name": "Kev", "model": "anthropic/claude-opus-4-5", "sandbox": { "mode": "off" } },
-      { "id": "rex", "name": "Rex", "model": "google-antigravity/gemini-3-pro-high" },
+      { "id": "rex", "name": "Rex", "model": "openai-codex/gpt-5.2-codex", "sandbox": { "mode": "all" } },
+      { "id": "scout", "name": "Scout", "model": "google-vertex/gemini-3-flash-preview" },
       { "id": "hawk", "name": "Hawk", "model": "anthropic/claude-opus-4-5" }
     ]
   },
@@ -406,14 +495,10 @@ This reduces drift and gives every agent a single, auditable work queue.
 
 # Closing
 
-The system isn’t magic; it’s **plumbing**:
-- clean routing
-- strict tool policy
-- explicit delegation
-- proactive heartbeats
-- hardened sandboxes
-- clear session boundaries
+The system isn’t magic; it’s **plumbing**.
 
-When all of that is in place, the team stops feeling like “AI in a tab” and starts behaving like a reliable operational layer.
+But when that plumbing is robust—clean routing, strict tool policy, explicit delegation, proactive heartbeats, and hardened sandboxes—the magic emerges. You stop managing individual prompts and start managing a workforce.
 
-If you want, I can turn this into a public‑facing article with diagrams and config snippets (redacted) showing how to replicate the setup.
+Kev and his Dream Team aren't just a tech demo. They are the daily drivers for an entire operational workflow, proving that with the right orchestration, AI agents can be trusted with the keys to the castle.
+
+**2026 is the year of the orchestrator.** And Kev is ready to work.
