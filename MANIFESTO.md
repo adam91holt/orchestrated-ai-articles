@@ -31,30 +31,41 @@ We are building this future at **[thecolab.ai](https://thecolab.ai)**.
 
 ## The Future: Deployable Intelligence Units
 
-We are moving beyond "My Personal Assistant." We are building **Deployable Intelligence Units**.
+We are moving beyond "My Personal Assistant." We are building **Deployable Intelligence Units**—living, breathing systems that scale with the work.
+
+It's not just about one user typing a command. It's about a persistent ecosystem where:
+- **Webhooks** from your production environment wake up the Ops team.
+- **Cron jobs** trigger daily security audits by Hawk.
+- **Orchestrators** spawn swarms of specialists to tackle massive backlogs in parallel.
+- **Agents talk to agents**, passing context, code, and critiques without human bottlenecks.
 
 ```mermaid
 graph TD
-    User[User] -->|Goal: Refactor Legacy App| Kev["Kev<br/>(Orchestrator)"]
-    Kev -->|Spawn| Unit[Deployable Intelligence Unit]
+    subgraph "The Pulse (Triggers)"
+        Webhook["Webhook<br/>(PagerDuty/GitHub)"] -->|Alert| Kev
+        Cron["Cron<br/>(Daily 09:00)"] -->|Routine| Kev
+        User[User] -->|Chat| Kev
+    end
+
+    Kev["Kev<br/>(The Orchestrator)"]
     
-    subgraph Unit [Scale: 100x Parallel Agents]
-        Rex1["Rex<br/>Refactor Module A"]
-        Rex2["Rex<br/>Refactor Module B"]
-        Rex3["Rex<br/>Refactor Module C"]
-        Hawk["Hawk<br/>Audit & Verify"]
+    subgraph "The Swarm (Deployable Units)"
+        direction TB
+        Kev -->|Spawn| RexSwarm["Rex Swarm<br/>(100x Parallel Coders)"]
+        Kev -->|Spawn| Hawk["Hawk<br/>(Security Audit)"]
+        Kev -->|Spawn| Scout["Scout<br/>(Live Research)"]
+        
+        RexSwarm <-->|Peer Review| Hawk
+        Scout -->|Context Injection| RexSwarm
     end
     
-    Rex1 -->|PR| GitHub
-    Rex2 -->|PR| GitHub
-    Rex3 -->|PR| GitHub
-    
-    Hawk -.->|Approve| GitHub
+    RexSwarm -->|PRs| GitHub
+    Hawk -->|Report| Slack
 ```
 
-Imagine spinning up a cluster of **100 Rex instances** to refactor a legacy codebase in parallel. Imagine dropping a pre-configured security team (Hawk + Scout) into a client's infrastructure to perform a continuous audit.
+Imagine a system that doesn't sleep. A security alert triggers a webhook. Kev wakes up, spawns Scout to research the CVE, spawns Hawk to audit your infrastructure, and spawns Rex to patch the vulnerability. They coordinate in a shared session, test the fix, and deploy it—all before you open your laptop.
 
-We are decoupling intelligence from the user's laptop. We are turning agents into a scalable, deployable workforce.
+We are decoupling intelligence from the chat box. We are turning agents into a scalable, event-driven workforce.
 
 ## Join Us
 
