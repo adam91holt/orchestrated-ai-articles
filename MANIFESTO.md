@@ -74,3 +74,10 @@ If you see this future—where AI is a team sport, where orchestration is the ki
 This isn't just about saving time. It's about redefining what a single human can achieve.
 
 **2026 is the year of the Orchestrator.**
+
+## Join the Movement
+
+- **Website**: [clawd.bot](https://clawd.bot)
+- **Docs**: [docs.clawd.bot](https://docs.clawd.bot/start/getting-started)
+- **Community**: [Join our Discord](https://discord.com/invite/clawd)
+- **Source**: [github.com/clawdbot/clawdbot](https://github.com/clawdbot/clawdbot)

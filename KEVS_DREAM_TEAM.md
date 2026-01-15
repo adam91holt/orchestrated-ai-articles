@@ -25,6 +25,11 @@ The clawd.bot site positions Clawdbot as “the AI that actually does things” 
 - **Full system access** with **sandboxing controls**.
 - **Skills & plugins** — including self‑authored skills.
 
+### Resources & Community
+- **Website**: [clawd.bot](https://clawd.bot)
+- **Docs**: [docs.clawd.bot](https://docs.clawd.bot/start/getting-started)
+- **Discord**: [Join our Discord](https://discord.com/invite/clawd)
+
 It also highlights a one‑line installer and 50+ integrations. This article focuses on the under‑the‑hood system that makes those claims true.
 
 ---

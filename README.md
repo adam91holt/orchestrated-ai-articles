@@ -34,3 +34,9 @@ Building the next generation of orchestrated AI at **[thecolab.ai](https://theco
 
 ## Contributing
 PRs welcome if you have concrete improvements, corrections, or diagrams to add.
+
+## Join the Community
+- **Website**: [clawd.bot](https://clawd.bot)
+- **Docs**: [docs.clawd.bot](https://docs.clawd.bot/start/getting-started)
+- **Discord**: [Join our Discord](https://discord.com/invite/clawd)
+- **Repo**: [clawdbot/clawdbot](https://github.com/clawdbot/clawdbot)
