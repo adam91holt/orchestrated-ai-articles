@@ -2,6 +2,8 @@
 
 This is the technical companion to “2026: The Year of the Orchestrator.” It explains **how the system is wired**: models, agents, sandboxing, routing, session tools, webhooks, heartbeats, and the workflow glue that makes a multi‑agent team reliable.
 
+Full article: https://adams-ai-journey.ghost.io/2026-the-year-of-the-orchestrator/
+
 > Note: configuration details are summarized and **redacted**. No secrets or tokens included.
 
 ---
