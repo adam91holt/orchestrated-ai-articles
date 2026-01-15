@@ -6,6 +6,12 @@ This is the technical companion to “2026: The Year of the Orchestrator.” It 
 
 ---
 
+## Shout‑Out (Read This First)
+
+Massive shout‑out to https://github.com/steipete — go check his repos. He’s shipped an absurd number of great tools lately (Clawdbot, Oracle, Gog, McPorter, RepoBar, Summarize, and more). I’m a huge fan — what he’s building right now is **fucking awesome**.
+
+---
+
 ## 0) Product Context (clawd.bot)
 
 The clawd.bot site positions Clawdbot as “the AI that actually does things” and emphasizes:
@@ -353,12 +359,6 @@ This reduces drift and gives every agent a single, auditable work queue.
   }
 }
 ```
-
----
-
-## 12) Shout‑Out
-
-Massive shout‑out to https://github.com/steipete — I’m a huge fan. What he’s building with Clawdbot right now is **fucking awesome**.
 
 ---
 
