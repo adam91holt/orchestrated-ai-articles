@@ -31,6 +31,25 @@ Agents aren't magic; they are software components. They need:
 
 We are moving beyond "My Personal Assistant." We are building **Deployable Intelligence Units**.
 
+```mermaid
+graph TD
+    User[User] -->|Goal: "Refactor Legacy App"| Kev[Kev\n(Orchestrator)]
+    Kev -->|Spawn| Unit[Deployable Intelligence Unit]
+    
+    subgraph Unit [Scale: 100x Parallel Agents]
+        Rex1[Rex\nRefactor Module A]
+        Rex2[Rex\nRefactor Module B]
+        Rex3[Rex\nRefactor Module C]
+        Hawk[Hawk\nAudit & Verify]
+    end
+    
+    Rex1 -->|PR| GitHub
+    Rex2 -->|PR| GitHub
+    Rex3 -->|PR| GitHub
+    
+    Hawk -.->|Approve| GitHub
+```
+
 Imagine spinning up a cluster of **100 Rex instances** to refactor a legacy codebase in parallel. Imagine dropping a pre-configured security team (Hawk + Scout) into a client's infrastructure to perform a continuous audit.
 
 We are decoupling intelligence from the user's laptop. We are turning agents into a scalable, deployable workforce.
