@@ -121,6 +121,14 @@ Each agent carries three human‑readable control files:
 
 This creates consistent personalities *and* consistent operational expectations across the team (e.g., “Kev is the orchestrator” and “do not message Adam directly”).
 
+### TEAM Protocol (How Agents Coordinate)
+
+Two shared files define how agents collaborate:
+- `TEAM_PROTOCOL.md` — no‑spam rules, deliverable formats, Slack tagging discipline
+- `TEAM.md` — roster, ownership matrix, escalation paths, workflows
+
+Agents are instructed to read these every session, so handoffs stay consistent and noise stays low.
+
 ---
 
 ## 3) Models & Selection
@@ -238,6 +246,16 @@ Capabilities:
 
 Mappings support templating, transforms, model overrides, and delivery routing. This is how you wire email, CRM, monitoring, or internal systems into a live agent workflow.
 
+### Webhook Example (Server Alert → Investigation → WhatsApp)
+
+A common pattern:
+1) Monitoring system sends a webhook to `/hooks/alert`
+2) Hook triggers an agent run with a playbook prompt
+3) Agent uses tools (e.g., `aws-cli`, logs, dashboards) to investigate
+4) Kev receives a summary and escalates to WhatsApp if action is needed
+
+This turns alerts into **proactive incident response**, not just notifications.
+
 ---
 
 ## 8) Channels & Routing
@@ -296,6 +314,51 @@ Clawdbot’s team protocol is strict:
 This keeps signal high and orchestration clean.
 
 This reduces drift and gives every agent a single, auditable work queue.
+
+---
+
+## 11) Minimal Config Example (Redacted, 3‑Agent Team)
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "model": { "primary": "google-antigravity/gemini-3-pro-high" },
+      "workspace": "/Users/you/agents/kev",
+      "sandbox": { "mode": "non-main", "workspaceAccess": "rw", "scope": "agent" }
+    },
+    "list": [
+      { "id": "kev", "name": "Kev", "model": "anthropic/claude-opus-4-5", "sandbox": { "mode": "off" } },
+      { "id": "rex", "name": "Rex", "model": "google-antigravity/gemini-3-pro-high" },
+      { "id": "hawk", "name": "Hawk", "model": "anthropic/claude-opus-4-5" }
+    ]
+  },
+  "bindings": [
+    { "agentId": "kev", "match": { "channel": "whatsapp" } },
+    { "agentId": "kev", "match": { "channel": "slack", "accountId": "kev" } }
+  ],
+  "hooks": {
+    "enabled": true,
+    "path": "/hooks",
+    "token": "REDACTED",
+    "mappings": [
+      {
+        "match": { "path": "alert" },
+        "action": "agent",
+        "sessionKey": "hook:alert:{{id}}",
+        "messageTemplate": "[ALERT]\n{{details}}",
+        "deliver": true
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 12) Shout‑Out
+
+Massive shout‑out to https://github.com/steipete — I’m a huge fan. What he’s building with Clawdbot right now is **fucking awesome**.
 
 ---
 
