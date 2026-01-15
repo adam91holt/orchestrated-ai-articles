@@ -42,70 +42,53 @@ The agent runtime is where the LLM operates, with tool access controlled by poli
 ### System Diagram (Mermaid)
 
 ```mermaid
-flowchart LR
-  subgraph Channels
-    WA[WhatsApp]
-    SL[Slack]
-    MS[Teams]
-    TG[Telegram]
-  end
+flowchart TD
+    subgraph Channels ["1. Omni-Channel Inputs"]
+        WA["WhatsApp"]
+        Slack["Slack"]
+        Teams["Teams"]
+        Hooks["Webhooks"]
+    end
 
-  subgraph Gateway
-    ROUTER[Routing + Sessions]
-    HOOKS[Hooks / Webhooks]
-    HB[Heartbeats]
-    TOOLS[Tool Runner]
-  end
+    subgraph Core ["2. Gateway Core"]
+        Router["Router & Session Manager"]
+        Policy["Policy Guardrails<br/>(Allow/Deny)"]
+    end
 
-  subgraph Agents
-    KEV[Kev Orchestrator]
-    REX[Rex Engineering]
-    HAWK[Hawk Security QA]
-    SCOUT[Scout Research]
-    DASH[Dash Analytics]
-    DOT[Dot Ops]
-    PIXEL[Pixel Design]
-  end
+    subgraph Runtime ["3. Massive Concurrency"]
+        direction TB
+        Kev1["Kev (Session A)<br/>Opus 4.5"]
+        Kev2["Kev (Session B)<br/>Opus 4.5"]
+        KevN["Kev (Session N...)<br/>Opus 4.5"]
+    end
 
-  subgraph Sandboxes
-    SBX[Docker Sandbox]
-  end
+    subgraph Swarm ["4. Specialist Swarm"]
+        Rex["Rex<br/>(Codex)"]
+        Hawk["Hawk<br/>(Opus)"]
+        Scout["Scout<br/>(Flash)"]
+    end
 
-  subgraph Workspaces
-    WS[Agent Workspaces + Memory]
-  end
+    subgraph Safety ["5. Sandboxed Execution"]
+        Tools["Tools & Skills<br/>(Docker Isolated)"]
+    end
 
-  WA --> ROUTER
-  SL --> ROUTER
-  MS --> ROUTER
-  TG --> ROUTER
+    WA --> Router
+    Slack --> Router
+    Teams --> Router
+    Hooks --> Router
 
-  HOOKS --> ROUTER
-  HB --> ROUTER
+    Router --> Policy
+    Policy --> Kev1
+    Policy --> Kev2
+    Policy --> KevN
 
-  ROUTER --> KEV
-  KEV --> REX
-  KEV --> HAWK
-  KEV --> SCOUT
-  KEV --> DASH
-  KEV --> DOT
-  KEV --> PIXEL
+    Kev1 -->|Delegates| Rex
+    Kev2 -->|Delegates| Hawk
+    KevN -->|Delegates| Scout
 
-  REX --> TOOLS
-  HAWK --> TOOLS
-  SCOUT --> TOOLS
-  DASH --> TOOLS
-  DOT --> TOOLS
-  PIXEL --> TOOLS
-
-  TOOLS --> SBX
-  KEV <--> WS
-  REX <--> WS
-  HAWK <--> WS
-  SCOUT <--> WS
-  DASH <--> WS
-  DOT <--> WS
-  PIXEL <--> WS
+    Rex --> Tools
+    Hawk --> Tools
+    Scout --> Tools
 ```
 
 ---
