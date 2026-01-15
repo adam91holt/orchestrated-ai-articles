@@ -33,21 +33,21 @@ We are moving beyond "My Personal Assistant." We are building **Deployable Intel
 
 ```mermaid
 graph TD
-    User[User] -->|Goal: "Refactor Legacy App"| Kev[Kev\n(Orchestrator)]
-    Kev -->|Spawn| Unit[Deployable Intelligence Unit]
+    User[User] -->|"Goal: Refactor Legacy App"| Kev[Kev<br/>(Orchestrator)]
+    Kev -->|"Spawn"| Unit[Deployable Intelligence Unit]
     
     subgraph Unit [Scale: 100x Parallel Agents]
-        Rex1[Rex\nRefactor Module A]
-        Rex2[Rex\nRefactor Module B]
-        Rex3[Rex\nRefactor Module C]
-        Hawk[Hawk\nAudit & Verify]
+        Rex1[Rex<br/>Refactor Module A]
+        Rex2[Rex<br/>Refactor Module B]
+        Rex3[Rex<br/>Refactor Module C]
+        Hawk[Hawk<br/>Audit & Verify]
     end
     
-    Rex1 -->|PR| GitHub
-    Rex2 -->|PR| GitHub
-    Rex3 -->|PR| GitHub
+    Rex1 -->|"PR"| GitHub
+    Rex2 -->|"PR"| GitHub
+    Rex3 -->|"PR"| GitHub
     
-    Hawk -.->|Approve| GitHub
+    Hawk -.->|"Approve"| GitHub
 ```
 
 Imagine spinning up a cluster of **100 Rex instances** to refactor a legacy codebase in parallel. Imagine dropping a pre-configured security team (Hawk + Scout) into a client's infrastructure to perform a continuous audit.
